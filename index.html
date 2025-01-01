@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Risk Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Trade Risk Calculator</h1>
+    <form id="calculatorForm">
+        <label for="totalAmount">Total amount:</label>
+        <input type="number" id="totalAmount" required>
+
+        <label for="riskInLosingTrade">Risk in losing trade (%):</label>
+        <input type="number" id="riskInLosingTrade" required>
+
+        <label for="riskPercentage">How much to risk (%):</label>
+        <input type="number" id="riskPercentage" required>
+
+        <button type="submit">Calculate</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('calculatorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const totalAmount = parseFloat(document.getElementById('totalAmount').value);
+            const riskInLosingTrade = parseFloat(document.getElementById('riskInLosingTrade').value);
+            const riskPercentage = parseFloat(document.getElementById('riskPercentage').value);
+
+            if (riskInLosingTrade === 0) {
+                document.getElementById('result').textContent = 'Error: Risk in losing trade cannot be zero.';
+                return;
+            }
+
+            const amountToTrade = (totalAmount * riskPercentage) / riskInLosingTrade;
+
+            document.getElementById('result').textContent = `Amount to put in trade: $${amountToTrade.toFixed(2)}`;
+        });
+    </script>
+</body>
+</html>
