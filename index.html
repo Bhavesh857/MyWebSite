@@ -3,209 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Trader Risk Calculator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Risk Management Dashboard</title>
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #0a0e17;
-            color: #ffffff;
-            line-height: 1.6;
-            padding: 20px;
+        body, html {
             margin: 0;
-            overflow-x: hidden;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(45deg, #001f3f, #003366);
+            color: #ffffff;
+            overflow: hidden;
         }
         .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .risk-management {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .icon {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 100, 255, 0.2);
+            border-radius: 50%;
             display: flex;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .calculator {
-            background-color: #1a1f2c;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            flex: 1;
-            margin-right: 20px;
-        }
-        .graph-container {
-            flex: 1;
-            background-color: #1a1f2c;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #4CAF50;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        label {
-            display: block;
-            margin-top: 15px;
-            color: #4CAF50;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #4CAF50;
-            background-color: #0a0e17;
-            color: #ffffff;
-            border-radius: 4px;
-        }
-        button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin-top: 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
             cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
         }
-        button:hover {
-            background-color: #45a049;
+        .icon:hover {
+            background: rgba(0, 100, 255, 0.5);
+            transform: scale(1.1);
         }
-        #result {
-            margin-top: 20px;
-            font-weight: bold;
-            background-color: #2a2f3a;
-            padding: 15px;
-            border-radius: 4px;
+        .line {
+            position: absolute;
+            background: rgba(0, 100, 255, 0.5);
+            transition: all 0.3s ease;
         }
-        .result-item {
-            margin-bottom: 10px;
-        }
-        .result-value {
-            color: #4CAF50;
-        }
-        .ticker-wrap {
-            width: 100%;
-            overflow: hidden;
-            background-color: #1a1f2c;
-            padding: 10px 0;
-            margin-bottom: 20px;
-        }
-        .ticker {
-            display: inline-block;
-            white-space: nowrap;
-            padding-right: 100%;
-            animation: ticker 30s linear infinite;
-        }
-        .ticker-item {
-            display: inline-block;
-            padding: 0 20px;
-            color: #4CAF50;
-        }
-        @keyframes ticker {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(-100%, 0, 0); }
-        }
+        #calculator { top: 20%; left: 20%; }
+        #person { top: 20%; right: 20%; }
+        #target { bottom: 20%; left: 20%; }
+        #handshake { bottom: 20%; right: 20%; }
+        #gears { top: 50%; left: 10%; }
     </style>
 </head>
 <body>
-    <div class="ticker-wrap">
-        <div class="ticker">
-            <div class="ticker-item">BTC/USD: $42,356.78 (+2.3%)</div>
-            <div class="ticker-item">ETH/USD: $2,890.15 (+1.7%)</div>
-            <div class="ticker-item">AAPL: $152.34 (+0.8%)</div>
-            <div class="ticker-item">GOOGL: $2,756.89 (-0.3%)</div>
-            <div class="ticker-item">AMZN: $3,456.12 (+1.2%)</div>
-        </div>
-    </div>
-
     <div class="container">
-        <div class="calculator">
-            <h1>Pro Trader Risk Calculator</h1>
-            <form id="calculatorForm">
-                <label for="totalAmount">Total Account Balance ($):</label>
-                <input type="number" id="totalAmount" step="0.01" required>
-
-                <label for="riskInLosingTrade">Stop Loss (%):</label>
-                <input type="number" id="riskInLosingTrade" step="0.01" required>
-
-                <label for="riskPercentage">Risk per Trade (%):</label>
-                <input type="number" id="riskPercentage" step="0.01" required>
-
-                <button type="submit">Calculate</button>
-            </form>
-
-            <div id="result"></div>
-        </div>
-
-        <div class="graph-container">
-            <canvas id="tradeChart"></canvas>
-        </div>
+        <div class="risk-management">RISK MANAGEMENT</div>
+        <div id="calculator" class="icon">🧮</div>
+        <div id="person" class="icon">👤</div>
+        <div id="target" class="icon">🎯</div>
+        <div id="handshake" class="icon">🤝</div>
+        <div id="gears" class="icon">⚙️</div>
     </div>
 
     <script>
-        // Calculator logic
-        document.getElementById('calculatorForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        const icons = document.querySelectorAll('.icon');
+        const container = document.querySelector('.container');
 
-            const totalAmount = parseFloat(document.getElementById('totalAmount').value);
-            const riskInLosingTrade = parseFloat(document.getElementById('riskInLosingTrade').value);
-            const riskPercentage = parseFloat(document.getElementById('riskPercentage').value);
-
-            if (riskInLosingTrade === 0) {
-                document.getElementById('result').innerHTML = '<div class="result-item">Error: Stop Loss cannot be zero.</div>';
-                return;
-            }
-
-            const amountToRisk = totalAmount * (riskPercentage / 100);
-            const amountToTrade = amountToRisk / (riskInLosingTrade / 100);
-            const potentialLoss = amountToRisk;
-
-            const resultHTML = `
-                <div class="result-item">Position Size: <span class="result-value">$${amountToTrade.toFixed(2)}</span></div>
-                <div class="result-item">Amount at Risk: <span class="result-value">$${potentialLoss.toFixed(2)}</span></div>
-                <div class="result-item">Percentage of Account at Risk: <span class="result-value">${riskPercentage.toFixed(2)}%</span></div>
-            `;
-
-            document.getElementById('result').innerHTML = resultHTML;
+        icons.forEach(icon => {
+            icon.addEventListener('mouseover', () => drawLines(icon));
+            icon.addEventListener('mouseout', removeLines);
         });
 
-        // Simulated trading chart
-        const ctx = document.getElementById('tradeChart').getContext('2d');
-        const initialData = Array.from({length: 20}, () => Math.random() * 100 + 100);
-        const labels = Array.from({length: 20}, (_, i) => i + 1);
+        function drawLines(icon) {
+            removeLines();
+            const iconRect = icon.getBoundingClientRect();
+            const centerX = iconRect.left + iconRect.width / 2;
+            const centerY = iconRect.top + iconRect.height / 2;
 
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Stock Price',
-                    data: initialData,
-                    borderColor: '#4CAF50',
-                    tension: 0.1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: false
-                    }
-                },
-                animation: {
-                    duration: 0
+            icons.forEach(otherIcon => {
+                if (otherIcon !== icon) {
+                    const otherRect = otherIcon.getBoundingClientRect();
+                    const otherCenterX = otherRect.left + otherRect.width / 2;
+                    const otherCenterY = otherRect.top + otherRect.height / 2;
+
+                    const line = document.createElement('div');
+                    line.className = 'line';
+                    const length = Math.sqrt(Math.pow(otherCenterX - centerX, 2) + Math.pow(otherCenterY - centerY, 2));
+                    const angle = Math.atan2(otherCenterY - centerY, otherCenterX - centerX) * 180 / Math.PI;
+
+                    line.style.width = `${length}px`;
+                    line.style.height = '2px';
+                    line.style.transform = `rotate(${angle}deg)`;
+                    line.style.position = 'absolute';
+                    line.style.left = `${centerX}px`;
+                    line.style.top = `${centerY}px`;
+                    line.style.transformOrigin = '0 0';
+
+                    container.appendChild(line);
                 }
-            }
-        });
+            });
+        }
 
-        // Update chart every second
-        setInterval(() => {
-            const newData = chart.data.datasets[0].data;
-            newData.shift();
-            newData.push(Math.random() * 100 + 100);
-            chart.update();
-        }, 1000);
+        function removeLines() {
+            document.querySelectorAll('.line').forEach(line => line.remove());
+        }
     </script>
 </body>
 </html>
