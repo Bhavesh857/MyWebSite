@@ -3,53 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trade Risk Calculator</title>
+    <title>Pro Trader Risk Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
+            font-family: 'Roboto', sans-serif;
+            background-color: #1c1c1c;
+            color: #ffffff;
+            line-height: 1.6;
             padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .calculator {
+            background-color: #2a2a2a;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #4CAF50;
+            text-align: center;
         }
         label {
             display: block;
-            margin-top: 10px;
+            margin-top: 15px;
+            color: #4CAF50;
         }
         input {
             width: 100%;
-            padding: 5px;
+            padding: 10px;
             margin-top: 5px;
+            border: 1px solid #4CAF50;
+            background-color: #1c1c1c;
+            color: #ffffff;
+            border-radius: 4px;
         }
         button {
-            margin-top: 20px;
+            display: block;
+            width: 100%;
             padding: 10px;
+            margin-top: 20px;
             background-color: #4CAF50;
             color: white;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
         }
         #result {
             margin-top: 20px;
             font-weight: bold;
+            background-color: #333;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .result-item {
+            margin-bottom: 10px;
+        }
+        .result-value {
+            color: #4CAF50;
         }
     </style>
 </head>
 <body>
-    <h1>Trade Risk Calculator</h1>
-    <form id="calculatorForm">
-        <label for="totalAmount">Total amount:</label>
-        <input type="number" id="totalAmount" required>
+    <div class="calculator">
+        <h1>Pro Trader Risk Calculator</h1>
+        <form id="calculatorForm">
+            <label for="totalAmount">Total Account Balance ($):</label>
+            <input type="number" id="totalAmount" step="0.01" required>
 
-        <label for="riskInLosingTrade">Risk in losing trade (%):</label>
-        <input type="number" id="riskInLosingTrade" required>
+            <label for="riskInLosingTrade">Stop Loss (%):</label>
+            <input type="number" id="riskInLosingTrade" step="0.01" required>
 
-        <label for="riskPercentage">How much to risk (%):</label>
-        <input type="number" id="riskPercentage" required>
+            <label for="riskPercentage">Risk per Trade (%):</label>
+            <input type="number" id="riskPercentage" step="0.01" required>
 
-        <button type="submit">Calculate</button>
-    </form>
+            <button type="submit">Calculate</button>
+        </form>
 
-    <div id="result"></div>
+        <div id="result"></div>
+    </div>
 
     <script>
         document.getElementById('calculatorForm').addEventListener('submit', function(e) {
@@ -60,13 +98,21 @@
             const riskPercentage = parseFloat(document.getElementById('riskPercentage').value);
 
             if (riskInLosingTrade === 0) {
-                document.getElementById('result').textContent = 'Error: Risk in losing trade cannot be zero.';
+                document.getElementById('result').innerHTML = '<div class="result-item">Error: Stop Loss cannot be zero.</div>';
                 return;
             }
 
-            const amountToTrade = (totalAmount * riskPercentage) / riskInLosingTrade;
+            const amountToRisk = totalAmount * (riskPercentage / 100);
+            const amountToTrade = amountToRisk / (riskInLosingTrade / 100);
+            const potentialLoss = amountToRisk;
 
-            document.getElementById('result').textContent = `Amount to put in trade: $${amountToTrade.toFixed(2)}`;
+            const resultHTML = `
+                <div class="result-item">Position Size: <span class="result-value">$${amountToTrade.toFixed(2)}</span></div>
+                <div class="result-item">Amount at Risk: <span class="result-value">$${potentialLoss.toFixed(2)}</span></div>
+                <div class="result-item">Percentage of Account at Risk: <span class="result-value">${riskPercentage.toFixed(2)}%</span></div>
+            `;
+
+            document.getElementById('result').innerHTML = resultHTML;
         });
     </script>
 </body>
