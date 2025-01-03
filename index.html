@@ -5,18 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pro Trader Risk Calculator</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #1c1c1c;
+            background-color: #0a0e17;
             color: #ffffff;
             line-height: 1.6;
             padding: 20px;
-            max-width: 800px;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        .container {
+            display: flex;
+            max-width: 1200px;
             margin: 0 auto;
         }
         .calculator {
-            background-color: #2a2a2a;
+            background-color: #1a1f2c;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            margin-right: 20px;
+        }
+        .graph-container {
+            flex: 1;
+            background-color: #1a1f2c;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -24,6 +39,7 @@
         h1 {
             color: #4CAF50;
             text-align: center;
+            margin-bottom: 30px;
         }
         label {
             display: block;
@@ -35,7 +51,7 @@
             padding: 10px;
             margin-top: 5px;
             border: 1px solid #4CAF50;
-            background-color: #1c1c1c;
+            background-color: #0a0e17;
             color: #ffffff;
             border-radius: 4px;
         }
@@ -58,7 +74,7 @@
         #result {
             margin-top: 20px;
             font-weight: bold;
-            background-color: #333;
+            background-color: #2a2f3a;
             padding: 15px;
             border-radius: 4px;
         }
@@ -68,28 +84,67 @@
         .result-value {
             color: #4CAF50;
         }
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            background-color: #1a1f2c;
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+        .ticker {
+            display: inline-block;
+            white-space: nowrap;
+            padding-right: 100%;
+            animation: ticker 30s linear infinite;
+        }
+        .ticker-item {
+            display: inline-block;
+            padding: 0 20px;
+            color: #4CAF50;
+        }
+        @keyframes ticker {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
     </style>
 </head>
 <body>
-    <div class="calculator">
-        <h1>Pro Trader Risk Calculator</h1>
-        <form id="calculatorForm">
-            <label for="totalAmount">Total Account Balance ($):</label>
-            <input type="number" id="totalAmount" step="0.01" required>
+    <div class="ticker-wrap">
+        <div class="ticker">
+            <div class="ticker-item">BTC/USD: $42,356.78 (+2.3%)</div>
+            <div class="ticker-item">ETH/USD: $2,890.15 (+1.7%)</div>
+            <div class="ticker-item">AAPL: $152.34 (+0.8%)</div>
+            <div class="ticker-item">GOOGL: $2,756.89 (-0.3%)</div>
+            <div class="ticker-item">AMZN: $3,456.12 (+1.2%)</div>
+        </div>
+    </div>
 
-            <label for="riskInLosingTrade">Stop Loss (%):</label>
-            <input type="number" id="riskInLosingTrade" step="0.01" required>
+    <div class="container">
+        <div class="calculator">
+            <h1>Pro Trader Risk Calculator</h1>
+            <form id="calculatorForm">
+                <label for="totalAmount">Total Account Balance ($):</label>
+                <input type="number" id="totalAmount" step="0.01" required>
 
-            <label for="riskPercentage">Risk per Trade (%):</label>
-            <input type="number" id="riskPercentage" step="0.01" required>
+                <label for="riskInLosingTrade">Stop Loss (%):</label>
+                <input type="number" id="riskInLosingTrade" step="0.01" required>
 
-            <button type="submit">Calculate</button>
-        </form>
+                <label for="riskPercentage">Risk per Trade (%):</label>
+                <input type="number" id="riskPercentage" step="0.01" required>
 
-        <div id="result"></div>
+                <button type="submit">Calculate</button>
+            </form>
+
+            <div id="result"></div>
+        </div>
+
+        <div class="graph-container">
+            <canvas id="tradeChart"></canvas>
+        </div>
     </div>
 
     <script>
+        // Calculator logic
         document.getElementById('calculatorForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -114,6 +169,43 @@
 
             document.getElementById('result').innerHTML = resultHTML;
         });
+
+        // Simulated trading chart
+        const ctx = document.getElementById('tradeChart').getContext('2d');
+        const initialData = Array.from({length: 20}, () => Math.random() * 100 + 100);
+        const labels = Array.from({length: 20}, (_, i) => i + 1);
+
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Stock Price',
+                    data: initialData,
+                    borderColor: '#4CAF50',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    }
+                },
+                animation: {
+                    duration: 0
+                }
+            }
+        });
+
+        // Update chart every second
+        setInterval(() => {
+            const newData = chart.data.datasets[0].data;
+            newData.shift();
+            newData.push(Math.random() * 100 + 100);
+            chart.update();
+        }, 1000);
     </script>
 </body>
 </html>
