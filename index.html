@@ -21,9 +21,9 @@
         }
         .risk-management {
             position: absolute;
-            top: 50%;
+            top: 10%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
             font-size: 24px;
             background: rgba(0, 0, 0, 0.5);
             padding: 20px;
@@ -56,6 +56,36 @@
         #target { bottom: 20%; left: 20%; }
         #handshake { bottom: 20%; right: 20%; }
         #gears { top: 50%; left: 10%; }
+        .calculator-form {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+        }
+        .calculator-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+        }
+        .calculator-form button {
+            width: 100%;
+            padding: 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -66,6 +96,14 @@
         <div id="target" class="icon">🎯</div>
         <div id="handshake" class="icon">🤝</div>
         <div id="gears" class="icon">⚙️</div>
+
+        <div class="calculator-form">
+            <input type="number" id="totalAmount" placeholder="Total Account Balance ($)" step="0.01" required>
+            <input type="number" id="riskInLosingTrade" placeholder="Stop Loss (%)" step="0.01" required>
+            <input type="number" id="riskPercentage" placeholder="Risk per Trade (%)" step="0.01" required>
+            <button onclick="calculateRisk()">Calculate Risk</button>
+            <div id="result"></div>
+        </div>
     </div>
 
     <script>
@@ -109,6 +147,29 @@
 
         function removeLines() {
             document.querySelectorAll('.line').forEach(line => line.remove());
+        }
+
+        function calculateRisk() {
+            const totalAmount = parseFloat(document.getElementById('totalAmount').value);
+            const riskInLosingTrade = parseFloat(document.getElementById('riskInLosingTrade').value);
+            const riskPercentage = parseFloat(document.getElementById('riskPercentage').value);
+
+            if (riskInLosingTrade === 0) {
+                document.getElementById('result').innerHTML = 'Error: Stop Loss cannot be zero.';
+                return;
+            }
+
+            const amountToRisk = totalAmount * (riskPercentage / 100);
+            const amountToTrade = amountToRisk / (riskInLosingTrade / 100);
+            const potentialLoss = amountToRisk;
+
+            const resultHTML = `
+                <div>Position Size: $${amountToTrade.toFixed(2)}</div>
+                <div>Amount at Risk: $${potentialLoss.toFixed(2)}</div>
+                <div>Percentage of Account at Risk: ${riskPercentage.toFixed(2)}%</div>
+            `;
+
+            document.getElementById('result').innerHTML = resultHTML;
         }
     </script>
 </body>
